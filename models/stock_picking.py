@@ -1,5 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
 
 
@@ -47,14 +49,13 @@ class StockPicking(models.Model):
             dest_name = picking.location_dest_id.display_name if picking.location_dest_id else _('N/A')
             op_type_name = picking.picking_type_id.display_name if picking.picking_type_id else _('N/A')
 
-            msg_body = _(
+            msg_body = Markup(
                 "<strong>New Operation Created: %s</strong><br/>"
                 "Operation Type: %s<br/>"
                 "Source Location: %s<br/>"
                 "Destination Location: %s<br/>"
-                "Status: Pending Validation",
-                picking.name, op_type_name, src_name, dest_name
-            )
+                "Status: Pending Validation"
+            ) % (picking.name, op_type_name, src_name, dest_name)
 
             # 1. Post Chatter message
             picking.message_post(
@@ -112,13 +113,12 @@ class StockPicking(models.Model):
             src_name = picking.location_id.display_name if picking.location_id else _('N/A')
             dest_name = picking.location_dest_id.display_name if picking.location_dest_id else _('N/A')
 
-            msg_body = _(
+            msg_body = Markup(
                 "<strong>Operation Validated: %s</strong><br/>"
                 "Source Location: %s<br/>"
                 "Destination Location: %s<br/>"
-                "Status: Validated / Done",
-                picking.name, src_name, dest_name
-            )
+                "Status: Validated / Done"
+            ) % (picking.name, src_name, dest_name)
 
             # 1. Chatter post
             picking.message_post(
